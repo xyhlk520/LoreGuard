@@ -1,0 +1,84 @@
+from sentence_transformers import SentenceTransformer
+
+from inspect_world import load_world, inspect_knowledge
+from retrieval import retrieve as keyword_retrieve
+
+def semantic_retrieve(
+    world, model, npc_id, state_id, query, top_k=3
+):
+    # Apply disclosure rules before semantic search.
+    knowledge = inspect_knowledge(world, npc_id, state_id)
+    candidates = knowledge["disclosable"]
+    if not candidates or top_k <= 0:
+        return []
+
+    texts = [entry["text"] for entry in candidates]
+
+    # Convert documents and the question into unit-length vectors.
+    document_vectors = model.encode(
+        texts,
+        normalize_embeddings=True,
+        convert_to_numpy=True
+    )
+
+    query_vector = model.encode(
+        query,
+        normalize_embeddings=True,
+        convert_to_numpy=True
+    )
+
+    # For normalized vectors, dot product equals cosine similarity.
+    scores = document_vectors @ query_vector
+
+    results = []
+
+    for entry, score in zip(candidates, scores):
+        results.append({
+            **entry,
+            "score": float(score)
+        })
+
+    results.sort(key=lambda item: item["score"], reverse=True)
+
+    return results[:top_k]
+
+
+if __name__ == "__main__":
+    world = load_world()
+
+    # Load the model once, then reuse it across queries.
+    model = SentenceTransformer(
+        "sentence-transformers/all-MiniLM-L6-v2",
+        device="cpu"
+    )
+
+    npc_id = "mira"
+    state_id = "before_trust"
+
+    queries = [
+        "Is leaving dangerous?",
+        "Can I depart?",
+        "What is the devil's true name?"
+    ]
+
+    for query in queries:
+        print(f"\nQuestion: {query}")
+
+        keyword_results = keyword_retrieve(
+            world, npc_id, state_id, query, top_k=2
+        )
+
+        semantic_results = semantic_retrieve(
+            world, model, npc_id, state_id, query, top_k=2
+        )
+
+        print("Keyword search:")
+        for result in keyword_results:
+            print(f"  {result['fact_id']}: {result['score']}")
+
+        print("Semantic search:")
+        for result in semantic_results:
+            print(
+                f"  {result['fact_id']}: "
+                f"{result['score']:.3f}"
+            )

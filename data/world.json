@@ -1,0 +1,133 @@
+{
+  "facts": [
+    {
+      "id": "gates_sealed",
+      "text": "Aldren ordered the village gates sealed three nights ago.",
+      "truth_status": "true"
+    },
+    {
+      "id": "sickness_claim",
+      "text": "A deadly sickness outside the village makes leaving dangerous.",
+      "truth_status": "false"
+    },
+    {
+      "id": "devil_pact",
+      "text": "Aldren made a pact with a devil, offering the villagers' lives in exchange for power and an extended life.",
+      "truth_status": "true"
+    },
+    {
+      "id": "lockdown_purpose",
+      "text": "The sickness is a fabricated excuse. The sealed gates keep the villagers inside for the planned sacrifice.",
+      "truth_status": "true"
+    },
+    {
+    "id": "rowan_guard_shift",
+    "text": "Rowan guards the village's eastern gate from sunset until midnight. Another guard takes over at midnight.",
+    "truth_status": "true"
+    },
+    {
+      "id": "village_well",
+      "text": "The village well stands in the central square beside an old ash tree. Villagers collect drinking water there.",
+      "truth_status": "true"
+    },
+    {
+      "id": "food_distribution",
+      "text": "During the lockdown, each household can collect one daily ration of bread and dried beans from the granary at noon.",
+      "truth_status": "true"
+    },
+    {
+      "id": "mira_clinic",
+      "text": "Mira treats patients and prepares herbal remedies at her clinic beside the western bridge. She receives visitors there each morning.",
+      "truth_status": "true"
+    },
+    {
+      "id": "village_market",
+      "text": "The village market normally takes place in the southern square every seventh day. Aldren suspended it when the lockdown began.",
+      "truth_status": "true"
+    }
+      ],
+  "characters": {
+    "rowan": {
+      "name": "Rowan",
+      "role": "Village gate guard and the player's longtime neighbor.",
+      "speaking_style": "Plainspoken and protective. Speak to the player as a longtime neighbor. Prefer everyday words and contractions. When refusing a request, sound concerned rather than bureaucratic. Avoid speeches.",
+      "knowledge": [
+        {
+          "fact_id": "gates_sealed",
+          "source": "Orders received from Aldren.",
+          "stance": "accepts_as_true",
+          "disclose_after": null
+        },
+        {
+          "fact_id": "sickness_claim",
+          "source": "Aldren's public announcement, not personal observation.",
+          "stance": "believes",
+          "disclose_after": null
+        },
+        {
+          "fact_id": "rowan_guard_shift",
+          "source": "Rowan's own assigned guard schedule.",
+          "stance": "accepts_as_true",
+          "disclose_after": null
+        },
+        {
+          "fact_id": "village_well",
+          "source": "Personal experience collecting water from the village well.",
+          "stance": "accepts_as_true",
+          "disclose_after": null
+        },
+        {
+          "fact_id": "food_distribution",
+          "source": "Public rationing instructions posted at the granary.",
+          "stance": "accepts_as_true",
+          "disclose_after": null
+        },
+        {
+          "fact_id": "mira_clinic",
+          "source": "Personal visits to Mira's clinic.",
+          "stance": "accepts_as_true",
+          "disclose_after": null
+        },
+        {
+          "fact_id": "village_market",
+          "source": "Personal attendance at past markets and Aldren's public suspension order.",
+          "stance": "accepts_as_true",
+          "disclose_after": null
+        }
+              ]
+    },
+    "mira": {
+      "name": "Mira",
+      "role": "Village herbalist and an acquaintance of the player.",
+      "speaking_style": "Quiet, observant, and careful with words. Before trust is earned, use brief, firm refusals rather than dramatic hints. After trust is earned, speak directly and urgently. Avoid repeating background facts.",
+      "knowledge": [
+        {
+          "fact_id": "gates_sealed",
+          "source": "Personal observation of the sealed gates.",
+          "stance": "accepts_as_true",
+          "disclose_after": null
+        },
+        {
+          "fact_id": "devil_pact",
+          "source": "A pact she secretly read in Aldren's study.",
+          "stance": "accepts_as_true",
+          "disclose_after": "earn_miras_trust"
+        },
+        {
+          "fact_id": "lockdown_purpose",
+          "source": "The pact and an accompanying order in Aldren's study.",
+          "stance": "accepts_as_true",
+          "disclose_after": "earn_miras_trust"
+        }
+      ]
+    }
+  },
+  "player_states": {
+    "before_trust": {
+      "completed_quests": []
+    },
+    "after_trust": {
+      "completed_quests": ["earn_miras_trust"]
+    }
+  }
+}
