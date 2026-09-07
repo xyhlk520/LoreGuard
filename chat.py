@@ -71,17 +71,35 @@ def main():
     state_id = "before_trust"
 
     with genai.Client(api_key=api_key) as client:
-        history = []
+        npc_ids = list(world["characters"].keys())
+        hist_by_npc = {npc: [] for npc in npc_ids}
+
         while True:
             query = input("\nYou (or 'quit'): ").strip()
 
             if query.lower() == "quit":
                 break
 
+            parts = query.split(maxsplit=1)
+            if parts and parts[0].lower() == "/npc":
+                if len(parts) == 1:
+                    print(f"Current NPC: {npc_id}")
+                    print(f"Available NPCs: {', '.join(world['characters'].keys())}")
+                    continue
+                if parts[1].strip().lower() in world["characters"]:
+                    nnpc_id = parts[1].strip().lower()
+                    print(f"Switched to NPC: {nnpc_id}")
+                    npc_id = nnpc_id
+                    continue
+                else:
+                    print(f"Unknown NPC: {parts[1].strip()}")
+                    print(f"Available NPCs: {', '.join(world['characters'].keys())}")
+                    continue
+
             if not query:
                 continue
 
-            rewritten_query = rewrite_query(client, query, history)
+            rewritten_query = rewrite_query(client, query, hist_by_npc[npc_id])
             print("Original:", query)
             print("Rewritten:", rewritten_query)
             evidence = retrieve(
@@ -93,7 +111,7 @@ def main():
                 query=rewritten_query,
                 top_k=2
             )
-            
+
             for entry in evidence:
                 print(
                     f"\n[{entry['fact_id']}] "
@@ -107,7 +125,7 @@ def main():
                 state_id=state_id,
                 query=query,
                 evidence=evidence,
-                history=history
+                history=hist_by_npc[npc_id]  # Keep only the last 6 messages in history
             )
             
             print("\n--- Conversation sent to Gemini ---")
@@ -119,9 +137,9 @@ def main():
             print(f"\n{world['characters'][npc_id]['name']}: {dialogue}")
 
             # Update history with the latest exchange
-            history.append({"role": "user", "content": query})
-            history.append({"role": "assistant", "content": dialogue})
-            history = history[-6:]  # Keep only the last 10 messages in history
+            hist_by_npc[npc_id].append({"role": "user", "content": query})
+            hist_by_npc[npc_id].append({"role": "assistant", "content": dialogue})
+            hist_by_npc[npc_id] = hist_by_npc[npc_id][-6:]  # Keep only the last 6 messages in history
 
 
 if __name__ == "__main__":
