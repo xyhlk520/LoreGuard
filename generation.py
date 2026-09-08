@@ -14,16 +14,15 @@ def build_messages(world, npc_id, state_id, query, evidence, history=None):
         "If it does not support an answer, express uncertainty."
     )
 
-    if (
-        npc_id == "mira"
-        and "earn_miras_trust" not in completed_quests
-    ):
-        disclosure_instruction = (
-            "You are unwilling to discuss the hidden reasons "
-            "for Aldren's lockdown until the player earns your trust. "
-            "If asked about those reasons, decline without hints. "
-            "You may discuss ordinary facts in the supplied evidence."
-        )
+    # Check for any disclosure rules that apply to the current state and NPC.
+    disclosure_rules = character.get("disclosure_rules", [])
+    disclosure_instructions = [disclosure_instruction]
+    for rule in disclosure_rules:
+        unless_completed = rule.get("unless_completed")
+        if unless_completed and unless_completed not in completed_quests:
+            disclosure_instructions.append(rule["instruction"])
+    disclosure_instruction = "\n".join(disclosure_instructions)       
+
 
     # Explicitly select fields that may enter the model context.
     safe_evidence = []

@@ -119,6 +119,12 @@
           "stance": "accepts_as_true",
           "disclose_after": "earn_miras_trust"
         }
+      ],
+      "disclosure_rules": [
+        {
+          "unless_completed": "earn_miras_trust",
+          "instruction":"You are unwilling to discuss the hidden reasons for Aldren's lockdown until the player earns your trust. If asked about those reasons, decline without hints. You may discuss ordinary facts in the supplied evidence."
+        }
       ]
     }
   },

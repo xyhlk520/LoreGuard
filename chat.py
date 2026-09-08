@@ -81,6 +81,7 @@ def main():
                 break
 
             parts = query.split(maxsplit=1)
+            # Handle NPC switching command
             if parts and parts[0].lower() == "/npc":
                 if len(parts) == 1:
                     print(f"Current NPC: {npc_id}")
@@ -95,6 +96,29 @@ def main():
                     print(f"Unknown NPC: {parts[1].strip()}")
                     print(f"Available NPCs: {', '.join(world['characters'].keys())}")
                     continue
+
+            # Handle state switching command
+            if parts and parts[0].lower() == "/state":
+                if len(parts) == 1:
+                    print(f"Current state: {state_id}")
+                    print(f"Available states: {', '.join(world['player_states'].keys())}")
+                    continue
+                if parts[1].strip().lower() in world["player_states"]:
+                    nstate_id = parts[1].strip().lower()
+                    if nstate_id == state_id:
+                        print(f"Already in state: {state_id}")
+                        continue
+
+                    print(f"Switched to state: {nstate_id}")
+                    state_id = nstate_id
+                    for npc in hist_by_npc:
+                        hist_by_npc[npc] = []  # Clear history for all NPCs when state changes
+                    continue
+                else:
+                    print(f"Unknown state: {parts[1].strip()}")
+                    print(f"Available states: {', '.join(world['player_states'].keys())}")
+                    continue
+            
 
             if not query:
                 continue
