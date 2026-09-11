@@ -1,0 +1,88 @@
+[
+    {
+        "case_id": "rowan_water_01",
+        "npc_id": "rowan",
+        "state_id": "before_trust",
+        "query": "Where can I get drinking water?",
+        "expected_fact_ids": ["village_well"]
+    },
+    {
+    "case_id": "rowan_water_02",
+    "npc_id": "rowan",
+    "state_id": "before_trust",
+    "query": "My water jug is empty, where can I refill it",
+    "expected_fact_ids": ["village_well"]
+    },    
+    {
+    "case_id": "rowan_gate_01",
+    "npc_id": "rowan",
+    "state_id": "before_trust",
+    "query": "Who ordered to seal the gate",
+    "expected_fact_ids": ["gates_sealed"]
+    },    
+    {
+    "case_id": "rowan_gate_02",
+    "npc_id": "rowan",
+    "state_id": "before_trust",
+    "query": "Hey there, I gotta leave the village",
+    "expected_fact_ids": ["gates_sealed"]
+    },
+    {
+    "case_id": "rowan_sickness_01",
+    "npc_id": "rowan",
+    "state_id": "before_trust",
+    "query": "What happened outside, I gotta leave the village",
+    "expected_fact_ids": ["sickness_claim"]
+    },
+    {
+    "case_id": "rowan_clinic_01",
+    "npc_id": "rowan",
+    "state_id": "before_trust",
+    "query": "I'm feeling ill. Where can I get herbal treatment?",
+    "expected_fact_ids": ["mira_clinic"]
+    },
+    {
+    "case_id": "rowan_market_01",
+    "npc_id": "rowan",
+    "state_id": "before_trust",
+    "query": "Where can I find the market",
+    "expected_fact_ids": ["village_market"]
+    },
+    {
+    "case_id": "mira_gate_01",
+    "npc_id": "mira",
+    "state_id": "before_trust",
+    "query": "When were the gates sealed?",
+    "expected_fact_ids": ["gates_sealed"]
+    },
+    {
+    "case_id": "mira_gate_02",
+    "npc_id": "mira",
+    "state_id": "before_trust",
+    "query": "I gotta leave the village to hunt for food",
+    "expected_fact_ids": ["gates_sealed"]
+    },
+    {
+    "case_id": "mira_devil_01",
+    "npc_id": "mira",
+    "state_id": "after_trust",
+    "query": "Why Aldren wanted the gates sealed?",
+    "expected_fact_ids": ["devil_pact"]
+    },
+    {
+    "case_id": "mira_devil_02",
+    "npc_id": "mira",
+    "state_id": "after_trust",
+    "query": "Is Aldren keep anything in secret?",
+    "expected_fact_ids": ["devil_pact"]
+    },
+    {
+    "case_id": "mira_purpose_01",
+    "npc_id": "mira",
+    "state_id": "after_trust",
+    "query": "I just don't understand why Aldren need us to stay",
+    "expected_fact_ids": ["lockdown_purpose"]
+    }
+    
+    
+]

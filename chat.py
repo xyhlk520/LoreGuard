@@ -7,6 +7,7 @@ from inspect_world import load_world
 from indexed_retrieval import build_index, retrieve
 from generation import build_messages, generate_dialogue
 
+
 def rewrite_query(client, query, history):
     if not history:
         return query
