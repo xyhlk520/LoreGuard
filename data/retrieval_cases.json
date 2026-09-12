@@ -67,7 +67,7 @@
     "npc_id": "mira",
     "state_id": "after_trust",
     "query": "Why Aldren wanted the gates sealed?",
-    "expected_fact_ids": ["devil_pact"]
+    "expected_fact_ids": ["lockdown_purpose"]
     },
     {
     "case_id": "mira_devil_02",
