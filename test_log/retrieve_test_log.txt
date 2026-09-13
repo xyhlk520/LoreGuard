@@ -1,0 +1,30 @@
+#1st test
+model =  "sentence-transformers/all-MiniLM-L6-v2"
+hit@2 = 10/12
+Failed Cases: 
+Case:  rowan_gate_02
+Expected:  ['gates_sealed']
+Retrieved: ['sickness_claim', 'village_well']
+fact:  sickness_claim
+score:  0.487609326839447
+fact:  village_well
+score:  0.296883225440979
+fact:  village_market
+score:  0.2920452952384949
+fact:  rowan_guard_shift
+score:  0.23917201161384583
+fact:  gates_sealed
+score:  0.2391195148229599
+fact:  mira_clinic
+score:  0.11535672098398209
+fact:  food_distribution
+score:  0.009680354036390781
+Case:  mira_purpose_01
+Expected:  ['lockdown_purpose']
+Retrieved: ['devil_pact', 'gates_sealed']
+fact:  devil_pact
+score:  0.3953453004360199
+fact:  gates_sealed
+score:  0.28203463554382324
+fact:  lockdown_purpose
+score:  0.17615579068660736
