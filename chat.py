@@ -2,7 +2,7 @@ import os
 
 from google import genai
 from sentence_transformers import SentenceTransformer
-
+from agent import agent_tools
 from inspect_world import load_world
 from indexed_retrieval import build_index, retrieve
 from generation import build_messages, generate_dialogue
@@ -42,7 +42,7 @@ Original question: {query}
         contents=[genai.types.Content(role="user", parts=[genai.types.Part(text=query_promt)])],
         config = genai.types.GenerateContentConfig(
             system_instruction=system_prompt,
-            max_output_tokens=512
+            max_output_tokens=512,
         )
     )
     rewritten_query = response.text.strip()

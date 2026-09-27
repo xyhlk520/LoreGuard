@@ -3,7 +3,7 @@ from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from inspect_world import load_world
 from indexed_retrieval import build_index, retrieve
-
+from utils import load_data
 
 def load_data(filename):
     path = Path(__file__).resolve().parent / "data" / filename
