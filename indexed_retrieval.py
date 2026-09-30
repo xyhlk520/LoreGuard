@@ -23,9 +23,9 @@ def build_index(world, model):
     return index
 
 
-def retrieve(world, model, index, npc_id, state_id, query, top_k=3):
+def retrieve(world, model, index, npc_id, player_state, query, top_k=3):
     """Search permitted facts using precomputed vectors."""
-    knowledge = inspect_knowledge(world, npc_id, state_id)
+    knowledge = inspect_knowledge(world, npc_id, player_state)
     candidates = knowledge["disclosable"]
 
     if not candidates or top_k <= 0:

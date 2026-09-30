@@ -44,6 +44,16 @@
       "id": "village_market",
       "text": "The village market normally takes place in the southern square every seventh day. Aldren suspended it when the lockdown began.",
       "truth_status": "true"
+    },
+    {
+      "id": "need_herbs",
+      "text": "Mira's store inventory is short on herb. Bringing herbs to Mira is very welcome.",
+      "truth_status": "true"
+    },
+    {
+      "id": "trust_condition",
+      "text": "Mira will never share secret to strangers, unless she achieve at least three herbs from the stranger.",
+      "truth_status": "true"
     }
       ],
   "characters": {
@@ -104,6 +114,18 @@
         {
           "fact_id": "gates_sealed",
           "source": "Personal observation of the sealed gates.",
+          "stance": "accepts_as_true",
+          "disclose_after": null
+        },
+        {
+          "fact_id": "need_herbs",
+          "source": "Daily check-in on store inventory.",
+          "stance": "accepts_as_true",
+          "disclose_after": null
+        },
+        {
+          "fact_id": "trust_condition",
+          "source": "Self",
           "stance": "accepts_as_true",
           "disclose_after": null
         },

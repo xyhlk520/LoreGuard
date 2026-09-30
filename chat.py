@@ -1,11 +1,12 @@
 import os
-
+from utils import load_data
 from google import genai
 from sentence_transformers import SentenceTransformer
 from agent import agent_tools
 from inspect_world import load_world
 from indexed_retrieval import build_index, retrieve
 from generation import build_messages, generate_dialogue
+from agent import run_agent
 
 
 def rewrite_query(client, query, history):
@@ -60,6 +61,7 @@ def main():
         )
 
     world = load_world()
+    init_state = load_data("init_player_state.json")
 
     embedding_model = SentenceTransformer(
         "sentence-transformers/all-MiniLM-L6-v2",
@@ -71,9 +73,13 @@ def main():
     npc_id = "rowan"
     state_id = "before_trust"
 
+
     with genai.Client(api_key=api_key) as client:
         npc_ids = list(world["characters"].keys())
         hist_by_npc = {npc: [] for npc in npc_ids}
+        event_by_npc = {npc: [] for npc in npc_ids}
+
+        player_state = init_state
 
         while True:
             query = input("\nYou (or 'quit'): ").strip()
@@ -82,6 +88,7 @@ def main():
                 break
 
             parts = query.split(maxsplit=1)
+
             # Handle NPC switching command
             if parts and parts[0].lower() == "/npc":
                 if len(parts) == 1:
@@ -97,6 +104,23 @@ def main():
                     print(f"Unknown NPC: {parts[1].strip()}")
                     print(f"Available NPCs: {', '.join(world['characters'].keys())}")
                     continue
+
+            #Handle action command
+            if parts and parts[0].lower() == "/act":
+                if len(parts) == 1:
+                    print(f"Describe your action after command.")
+                    print(f"e.g. /act Check my inventory")
+                    continue
+                else:
+                    agent_result = run_agent(client, parts[1].strip().lower(), player_state, npc_id)
+                    print(agent_result["reply"])
+                    for tool_result in agent_result["tool_results"]:
+                        if tool_result["tool_name"] == "deliver_herbs" and tool_result["result"].get("succress",True):
+                            event_by_npc["mira"].append("The player delivered three healing herbs to Mira and completed her herb quest.")
+                            continue
+                    continue
+
+
 
             # Handle state switching command
             if parts and parts[0].lower() == "/state":
@@ -132,7 +156,7 @@ def main():
                 model=embedding_model,
                 index=index,
                 npc_id=npc_id,
-                state_id=state_id,
+                player_state=player_state,
                 query=rewritten_query,
                 top_k=2
             )
@@ -147,10 +171,11 @@ def main():
             messages = build_messages(
                 world=world,
                 npc_id=npc_id,
-                state_id=state_id,
+                player_state=player_state,
                 query=query,
                 evidence=evidence,
-                history=hist_by_npc[npc_id]  # Keep only the last 6 messages in history
+                history=hist_by_npc[npc_id],
+                events = event_by_npc[npc_id]
             )
             
             print("\n--- Conversation sent to Gemini ---")
@@ -160,6 +185,7 @@ def main():
             dialogue = generate_dialogue(client, messages)
 
             print(f"\n{world['characters'][npc_id]['name']}: {dialogue}")
+            print(f"current event: {event_by_npc[npc_id]}")
 
             # Update history with the latest exchange
             hist_by_npc[npc_id].append({"role": "user", "content": query})

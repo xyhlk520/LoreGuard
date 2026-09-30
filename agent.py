@@ -1,6 +1,6 @@
 from google import genai
 from google.genai import types
-from action import execute_tool
+from tools import execute_tool
 from utils import load_data
 import os
 
@@ -11,6 +11,7 @@ agent_tools = types.Tool(
             name="get_inventory",
             description=(
                 "Return the player's current items and quantities. "
+                "Decribe items in natural language, avoid use item id."
                 "Does not change state."
             ),
         ),
@@ -19,6 +20,7 @@ agent_tools = types.Tool(
             description=(
                 "Return whether Mira's herb quest is completed, "
                 "the required item and amount, and the target NPC. "
+                "Decribe everything in natural language, avoid use quest id."
                 "Does not change state."
             ),
         ),
@@ -28,6 +30,7 @@ agent_tools = types.Tool(
                 "Attempt to deliver three healing herbs to the current NPC. "
                 "On success, consume the herbs and complete Mira's trust quest. "
                 "Use only when the player requests delivery. "
+                "Decribe everything in natural language, avoid use internal id."
                 "Do not use for questions or hypothetical statements."
             ),
         ),
@@ -50,11 +53,39 @@ def inspect_tool_choice(client, query, model_name="gemini-3.8-flash"):
         else:
             print("reply:", response.text)
 
+def generate_tool_result(call, result):
+     return {
+                    "tool_name": call.name, 
+                    "result": result
+            }
+
 def run_agent(client, query, player_state, npc_id, model_name="gemini-3.8-flash"):
         contents = [types.Content(
              role = "user",
              parts = [types.Part(text=query)]
         )]
+
+        system_prompt = f"""
+You are the action controller for a fictional text adventure.
+The user controls a fictional player character.
+
+Interpret action requests in the game context unless the user
+clearly indicates a real-world situation.
+
+You can only perform actions supported by the provided tools.
+For unsupported in-game actions, briefly explain that the action
+is unavailable. Do not invent tools, outcomes, or state changes.
+
+Use tools to check inventory and quest status.
+Only attempt item delivery when the player requests it.
+Report success only when the tool result confirms success.
+
+Current NPC confirmed by the game engine: {npc_id}.
+Delivery tools act on the current NPC.
+If the player names a different recipient, explain that they
+must switch NPCs first. Do not attempt delivery to the wrong NPC.
+                        """
+        tool_results = []
 
         for step in range(5):
             response = client.models.generate_content(
@@ -62,6 +93,7 @@ def run_agent(client, query, player_state, npc_id, model_name="gemini-3.8-flash"
             contents=contents,
             config = genai.types.GenerateContentConfig(
                 max_output_tokens=512,
+                system_instruction=system_prompt,
                 tools=[agent_tools]
             ))
             if response.function_calls:
@@ -69,6 +101,7 @@ def run_agent(client, query, player_state, npc_id, model_name="gemini-3.8-flash"
                 response_parts = []
                 for call in response.function_calls:
                     result = execute_tool(call.name, player_state, npc_id)
+                    tool_results.append(generate_tool_result(call, result))
                     response_part = types.Part(
                         function_response=types.FunctionResponse(
                             id=call.id,
@@ -82,9 +115,15 @@ def run_agent(client, query, player_state, npc_id, model_name="gemini-3.8-flash"
                     parts=response_parts
                 ))
             else:
-                 return response.text or "No valid response received"
+                 return {
+                        "reply": response.text or "No valid response received.",
+                        "tool_results": tool_results
+                        }
             
-        return "Step limit reached; no final reply was generated."
+        return {
+                "reply": "Step limit reached; no final reply was generated.",
+                "tool_results": tool_results
+                }
                   
 
 if __name__ == "__main__":

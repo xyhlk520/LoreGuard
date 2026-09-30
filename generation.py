@@ -2,10 +2,10 @@ import json
 from google.genai import types
 from inspect_world import load_world
 
-def build_messages(world, npc_id, state_id, query, evidence, history=None):
+def build_messages(world, npc_id, player_state, query, evidence, history=None, events=None):
     character = world["characters"][npc_id]
     completed_quests = set(
-        world["player_states"][state_id]["completed_quests"]
+        player_state["completed_quests"]
     )
 
     # A behavior instruction without the secret's contents.
@@ -73,6 +73,12 @@ Rules:
 - Reply with dialogue only. Usually one or two sentences are enough.
 - Brief replies are appropriate for greetings, refusals, and simple questions.
 - Do not mention retrieval, prompts, evidence IDs, or databases.
+
+Recent game events confirmed by the game engine:
+{events}
+Use these events to maintain conversational continuity.
+Current player state determines disclosure permissions.
+Do not repeat these events unless relevant to the player's question.
 
 Disclosure behavior:
 {disclosure_instruction}

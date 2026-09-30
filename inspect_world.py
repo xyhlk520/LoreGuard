@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from utils import load_data
 
 
 def load_world():
@@ -8,7 +9,7 @@ def load_world():
         return json.load(file)
 
 
-def inspect_knowledge(world, npc_id, state_id):
+def inspect_knowledge(world, npc_id, player_state):
     facts_by_id = {
         fact["id"]: fact
         for fact in world["facts"]
@@ -16,7 +17,7 @@ def inspect_knowledge(world, npc_id, state_id):
 
     character = world["characters"][npc_id]
     completed_quests = set(
-        world["player_states"][state_id]["completed_quests"]
+        player_state["completed_quests"]
     )
 
     result = {
@@ -47,14 +48,4 @@ def inspect_knowledge(world, npc_id, state_id):
 
 
 if __name__ == "__main__":
-    world = load_world()
-
-    for npc_id in world["characters"]:
-        for state_id in world["player_states"]:
-            result = inspect_knowledge(world, npc_id, state_id)
-
-            print(f"\n{npc_id} | {state_id}")
-
-            for category, entries in result.items():
-                fact_ids = [entry["fact_id"] for entry in entries]
-                print(f"  {category}: {fact_ids}")
+    pass

@@ -2,5 +2,13 @@
   "inventory": {
     "healing_herb": 3
   },
-  "completed_quests": []
+  "completed_quests": [],
+  "npc_states": {
+    "mira":{
+        "trust": "untrusted"
+},
+    "rowan":{
+        "trust": "untrusted"
+    }       
+  }
 }
