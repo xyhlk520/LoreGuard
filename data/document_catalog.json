@@ -1,0 +1,14 @@
+[
+  {
+    "document_id": "mira_clinic",
+    "title": "Mira's Clinic",
+    "source_file": "data/documents/mira_clinic.md",
+    "knowledge": {
+      "mira": {
+        "source": "Her own work at the clinic.",
+        "stance": "accepts_as_true",
+        "disclose_after": null
+      }
+    }
+  }
+]

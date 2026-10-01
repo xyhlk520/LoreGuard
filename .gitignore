@@ -3,7 +3,7 @@
 .env.*
 !.env.example
 
-
+interview.txt
 __pycache__/
 *.py[cod]
 .venv/

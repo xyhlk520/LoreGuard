@@ -1,5 +1,5 @@
 import os
-from utils import load_data
+from utils import load_data, save_game, load_saved_game
 from google import genai
 from sentence_transformers import SentenceTransformer
 from agent import agent_tools
@@ -119,8 +119,24 @@ def main():
                             event_by_npc["mira"].append("The player delivered three healing herbs to Mira and completed her herb quest.")
                             continue
                     continue
+            #Handle save/load command            
+            if parts and parts[0].lower() == "/save":
+                save_game(player_state, event_by_npc)
+                print("Game saved.")
+                continue
 
-
+            if parts and parts[0].lower() == "/load":
+                data = load_saved_game()
+                if data:
+                    player_state = data["player_state"]
+                    event_by_npc = data["event_by_npc"]
+                    print("Game loaded.")
+                    for npc in hist_by_npc:
+                        hist_by_npc[npc] = []  # Clear history for all NPCs when loading a game
+                    continue
+                else:
+                    print("No save file found.")
+                    continue
 
             # Handle state switching command
             if parts and parts[0].lower() == "/state":

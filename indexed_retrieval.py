@@ -22,6 +22,64 @@ def build_index(world, model):
 
     return index
 
+def build_document_index(chunks, model):
+    if not chunks:
+        return {}
+    texts = [chunk["embedding_text"] for chunk in chunks]
+    vectors = model.encode(
+        texts,
+        normalize_embeddings=True,
+        convert_to_numpy=True)
+    
+    index = {}
+    for chunk, vector in zip(chunks, vectors):
+        index[chunk["chunk_id"]] = vector
+
+    return index
+
+def retrieve_document_chunks(chunks, model, index, npc_id, player_state, query, top_k=3):
+
+    qualified_chunks = []
+    for chunk in chunks:
+        knowledge = chunk["knowledge"].get(npc_id)
+        if knowledge is None:
+            continue
+
+        required_quest = knowledge["disclose_after"]
+        if (
+            required_quest is None
+            or required_quest in player_state["completed_quests"]
+        ):
+            qualified_chunks.append(chunk)
+
+    if  top_k <= 0 or not qualified_chunks:
+        return []
+
+    # Select only vectors for facts this NPC may disclose.
+    document_vectors = np.stack([
+        index[chunk["chunk_id"]]
+        for chunk in qualified_chunks
+    ])
+
+    query_vector = model.encode(
+        query,
+        normalize_embeddings=True,
+        convert_to_numpy=True
+    )
+
+    scores = document_vectors @ query_vector
+
+    results = []
+
+    for chunk, score in zip(qualified_chunks, scores):
+        results.append({
+            **chunk,
+            "score": float(score)
+        })
+
+    results.sort(key=lambda item: item["score"], reverse=True)
+
+    return results[:top_k]
 
 def retrieve(world, model, index, npc_id, player_state, query, top_k=3):
     """Search permitted facts using precomputed vectors."""

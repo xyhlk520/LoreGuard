@@ -1,0 +1,20 @@
+{
+  "player_state": {
+    "inventory": {
+      "healing_herb": 3
+    },
+    "completed_quests": [],
+    "npc_states": {
+      "mira": {
+        "trust": "untrusted"
+      },
+      "rowan": {
+        "trust": "untrusted"
+      }
+    }
+  },
+  "event_by_npc": {
+    "rowan": [],
+    "mira": []
+  }
+}

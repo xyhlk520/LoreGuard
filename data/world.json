@@ -52,7 +52,7 @@
     },
     {
       "id": "trust_condition",
-      "text": "Mira will never share secret to strangers, unless she achieve at least three herbs from the stranger.",
+      "text": "Delivering three healing herbs to Mira fulfills the requirement for earning her trust.",
       "truth_status": "true"
     }
       ],
