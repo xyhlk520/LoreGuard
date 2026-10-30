@@ -4,7 +4,7 @@ A State-Aware RAG Dialogue System for NPCs
 
 ## Overview
 
-LoreScope is a Python prototype for NPC conversations grounded in
+LoreGuard is a Python prototype for NPC conversations grounded in
 character-specific knowledge and quest-based disclosure rules.
 
 Set in the fictional Moonlight Village, the system separates world
