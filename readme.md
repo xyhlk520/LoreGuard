@@ -1,4 +1,4 @@
-# LoreScope
+# LoreGuard
 
 A State-Aware RAG Dialogue System for NPCs
 
